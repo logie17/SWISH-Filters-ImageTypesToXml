@@ -22,7 +22,10 @@ A SWISHE filter that takes an incoming jpg and analyzes it with Imager::ImageTyp
 
 =head1 METHODS
 
-=head2 new
+=head2 new ( $class )
+
+Constructor. Dynamically loads Imager and Search::Tools::XML. Also sets the
+filter mimtype to "image/jpeg".
 
 =cut
 
@@ -38,7 +41,9 @@ sub new {
     return $self->use_modules(qw/Imager Search::Tools::XML/);
 }
 
-=head2 filter
+=head2 filter( $self, $doc )
+
+Generates Imager::ImageTypes meta data for indexing.
 
 =cut
 
@@ -57,6 +62,7 @@ sub filter {
         channels    => $img->getchannels,
         colorcount  => $img->getcolorcount,
         counts      => [$img->getcolorusage],
+        %{$user_meta}
     };
 
     $doc->set_content_type('application/xml');
