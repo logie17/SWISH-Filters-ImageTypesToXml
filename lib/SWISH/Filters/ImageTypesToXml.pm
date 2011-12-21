@@ -1,6 +1,7 @@
 package SWISH::Filters::ImageTypesToXml;
 use strict;
 use warnings;
+use SWISH::Filter::MIMETypes;
 use base 'SWISH::Filters::Base';
 
 =head1 NAME
@@ -34,11 +35,19 @@ sub new {
 
     $class = ref $class || $class;
 
-    my $self = bless {
-        mimetypes => [qr!image/jpeg!],
-    }, $class;
+    my $self = bless { }, $class;
 
-    return $self->use_modules(qw/Imager Search::Tools::XML/);
+    return $self->_init;
+}
+
+sub _init {
+    my ( $self ) = @_;
+
+    $self->use_modules(qw/Imager Search::Tools::XML/);
+    my @mimetypes = map { SWISH::Filter::MIMETypes->get_mime_type('*.' . $_) } Imager->read_types;
+    $self->{mimetypes} = \@mimetypes;
+
+    return $self;
 }
 
 =head2 filter( $self, $doc )
