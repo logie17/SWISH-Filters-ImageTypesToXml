@@ -6,7 +6,7 @@ use base 'SWISH::Filters::Base';
 
 =head1 NAME
 
-SWISH::Filters::ImageTypesToXml - The great new SWISH::Filters::ImageTypesToXml!
+SWISH::Filters::ImageTypesToXml
 
 =head1 VERSION
 
@@ -26,7 +26,7 @@ A SWISHE filter that takes an incoming jpg and analyzes it with Imager::ImageTyp
 =head2 new ( $class )
 
 Constructor. Dynamically loads Imager and Search::Tools::XML. Also sets the
-filter mimtype to "image/jpeg".
+filter mimtype to whatever Imager supports.
 
 =cut
 
