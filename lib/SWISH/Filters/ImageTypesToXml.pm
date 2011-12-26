@@ -10,16 +10,21 @@ SWISH::Filters::ImageTypesToXml
 
 =head1 VERSION
 
-Version 0.01
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 =head1 SYNOPSIS
 
 A SWISHE filter that takes an incoming jpg and analyzes it with Imager::ImageTypes.
+This filter also accepts incoming XML as long as there is a base64 image data.
+
+If an XML file is passed into the filter it will look for the "b64_data" tag.
+If the xml contains this tag it will process the image that is stored in
+base64 format.
 
 =head1 METHODS
 
@@ -44,11 +49,31 @@ sub _init {
     my ( $self ) = @_;
 
     $self->use_modules(qw/Imager Search::Tools::XML/);
-    my @mimetypes = map { SWISH::Filter::MIMETypes->get_mime_type('*.' . $_) } Imager->read_types;
+
+    my @mimetypes = (
+        map { SWISH::Filter::MIMETypes->get_mime_type('*.' . $_) } Imager->read_types,
+        'application/xml'
+    );
+
     $self->{mimetypes} = \@mimetypes;
 
     return $self;
 }
+
+sub _parse_xml {
+    my ( $self, $xml ) = @_;
+
+    if ( $xml ) {
+        use XML::Simple;
+        use MIME::Base64;
+        if ( my $ds = XMLin($xml) ) {
+            if ( my $bin = decode_base64($ds->{b64_data}) ) {
+                return $bin;
+            }
+        }
+    }
+}
+
 
 =head2 filter( $self, $doc )
 
@@ -60,19 +85,28 @@ sub filter {
     my ( $self, $doc ) = @_;
 
     my $file        = $doc->fetch_filename;
-    my $user_meta   = $doc->meta_data || {};
+    my $user_meta   = $doc->meta_data || {
+        image_types_config => {
+            generate_histogram  => 0
+        }
+    };
 
-    my $img         = Imager->new(file=>$file);
     my $utils       = Search::Tools::XML->new;
+    my $imager      = Imager->new;
+    my $img         = $doc->is_binary ? $imager->read( file => $file ) :
+                      $utils->looks_like_xml($file) ? $imager->read( data => $self->_parse_xml($file) ) : undef;
+
+    return unless $img;
 
     my $image_data  = {
         width       => $img->getwidth,
         height      => $img->getheight,
         channels    => $img->getchannels,
         colorcount  => $img->getcolorcount,
-        counts      => [$img->getcolorusage],
         %{$user_meta}
     };
+
+    $image_data->{counts} = [ $img->getcolorusage ] if $user_meta->{image_types_config}{generate_histogram};
 
     $doc->set_content_type('application/xml');
     my $xml = $utils->perl_to_xml($image_data, 'image_data', );
