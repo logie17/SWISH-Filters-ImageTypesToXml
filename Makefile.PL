@@ -6,8 +6,10 @@ author   q{Logan Bell <loganbell@gmail.com>};
 abstract 'A filter that applies Imager::ImageTypes to index';
 license  'perl';
 
-requires 'SWISH::Filters'           => 0;
-requires 'SWISH::Filter::MIMETypes' => 0;
+requires 'SWISH::Filters'                   => 0;
+requires 'SWISH::Filter::MIMETypes'         => 0;
+requires 'Search::OpenSearch::Engine::Lucy' => 0.06
+requires 'Mime::Base64'                     => 0;
 build_requires 'Test::More';
 repository 'git://github.com/logie17/SWISH-Filters-ImageTypesToXml.git';
 
