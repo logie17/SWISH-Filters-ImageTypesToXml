@@ -68,6 +68,7 @@ sub _parse_xml {
         use MIME::Base64;
         if ( my $ds = XMLin($xml) ) {
             if ( my $bin = decode_base64($ds->{b64_data}) ) {
+                $self->{b64_data} = $ds->{b64_data};
                 return $bin;
             }
         }
@@ -106,7 +107,8 @@ sub filter {
         %{$user_meta}
     };
 
-    $image_data->{counts} = [ $img->getcolorusage ] if $user_meta->{image_types_config}{generate_histogram};
+    $image_data->{counts}   = [ $img->getcolorusage ] if $user_meta->{image_types_config}{generate_histogram};
+    $image_data->{b64_data} = $self->{b64_data} if $self->{b64_data};
 
     $doc->set_content_type('application/xml');
     my $xml = $utils->perl_to_xml($image_data, 'image_data', );
