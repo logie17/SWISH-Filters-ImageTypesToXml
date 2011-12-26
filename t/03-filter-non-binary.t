@@ -10,7 +10,11 @@ use_ok( 'SWISH::Filters::ImageTypesToXml' );
 my $subject = SWISH::Filters::ImageTypesToXml->new;
 my $xml = $subject->filter(get_doc({ image_types_config => {generate_histogram => 0 }}));
 
-is $xml, read_file('t/image_data.xml');
+#open my $fh, ">", 't/image_base64_data.xml';
+#print $fh $xml;
+#close $fh;
+
+is $xml, read_file('t/image_base64_data.xml');
 
 
 done_testing;
