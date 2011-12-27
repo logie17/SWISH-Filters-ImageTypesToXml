@@ -8,7 +8,7 @@ license  'perl';
 
 requires 'SWISH::Filters'                   => 0;
 requires 'SWISH::Filter::MIMETypes'         => 0;
-requires 'Search::OpenSearch::Engine::Lucy' => 0.06
+requires 'Search::OpenSearch::Engine::Lucy' => 0.06;
 requires 'Mime::Base64'                     => 0;
 build_requires 'Test::More';
 repository 'git://github.com/logie17/SWISH-Filters-ImageTypesToXml.git';
