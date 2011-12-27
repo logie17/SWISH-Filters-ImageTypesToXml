@@ -3,7 +3,6 @@ use inc::Module::Install;
 name     'SWISH-Filters-ImageTypesToXml';
 all_from 'lib/SWISH/Filters/ImageTypesToXml.pm';
 author   q{Logan Bell <loganbell@gmail.com>};
-abstract 'A filter that applies Imager::ImageTypes to index';
 license  'perl';
 
 requires 'SWISH::Filters'                   => 0;
