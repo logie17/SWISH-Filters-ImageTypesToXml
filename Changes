@@ -14,3 +14,6 @@ Revision history for SWISH-Filters-ImageTypesToXml
         Updated documentation to include configuration options. Fixed the
         configurations for the Makefile.PL to get the correct abstract.
 
+0.05    12/27/2011
+        Fixed broken unit test by included needed dependency: SWISH::Filters
+
