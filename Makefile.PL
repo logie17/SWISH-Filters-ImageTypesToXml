@@ -1,4 +1,4 @@
-use inc::Module::Install;
+use inc::Module::Install 1.05;
 
 name     'SWISH-Filters-ImageTypesToXml';
 all_from 'lib/SWISH/Filters/ImageTypesToXml.pm';
@@ -16,8 +16,6 @@ test_requires 'Test::MockObject';
 test_requires 'File::Slurp';
 
 repository 'git://github.com/logie17/SWISH-Filters-ImageTypesToXml.git';
-
-auto_install;
 
 WriteAll;
 
